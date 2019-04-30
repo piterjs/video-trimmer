@@ -4,6 +4,7 @@ node_modules
 *.nedb
 app/build
 server/secrets
+server/public
 data
 .vscode
 .env
