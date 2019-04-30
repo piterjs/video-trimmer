@@ -1,14 +1,20 @@
 {
-  "name": "shared",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@piterjs/trimmer-shared",
+  "version": "0.0.1",
+  "description": "shared package",
   "main": "index.js",
+	"homepage": "https://github.com/piterjs/video-trimmer",
   "scripts": {
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+	"repository": {
+		"type" : "git",
+		"url" : "https://github.com/piterjs/video-trimmer",
+		"directory": "shared"
+	},
   "keywords": [],
-  "author": "",
+  "author": "Mikhail Poluboyarinov <mikle.sol@gmail.com>",
   "license": "ISC",
   "eslintConfig": {
     "extends": "standard",

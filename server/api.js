@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { google } = require('googleapis');
 
-const { videoSchema, serviceSchema } = require('shared');
+const { videoSchema, serviceSchema } = require('@piterjs/trimmer-shared');
 
 const OAuth2 = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { videoSchema, serviceSchema } = require('shared');
+const { videoSchema, serviceSchema } = require('@piterjs/trimmer-shared');
 
 const watch = require('./watch');
 

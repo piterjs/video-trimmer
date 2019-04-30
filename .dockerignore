@@ -9,5 +9,4 @@ README.md
 LICENSE
 .vscode
 */node_modules
-app/build
 server/secrets
