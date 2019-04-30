@@ -1,7 +1,7 @@
 FROM alfg/ffmpeg:latest
 
 WORKDIR /app
-COPY . .
+COPY watcher/ .
 
 RUN apk update \
     && apk add curl python2 nodejs-current nodejs-npm \
