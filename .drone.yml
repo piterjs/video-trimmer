@@ -1,0 +1,111 @@
+kind: pipeline
+name: app
+steps:
+- name: build
+  image: node:8
+  commands:
+    - make app
+
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: piterjs/trimmer-app
+    dockerfile: Dockerfile
+    tags: v0.0.1-${DRONE_COMMIT:0:8}
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+
+- name: deploy
+  image: vallard/drone-kube
+  environment:
+    KUBE_SERVER:
+      from_secret: KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: KUBE_TOKEN
+    KUBE_CA:
+      from_secret: KUBE_CA
+  settings:
+    template: deployment/app-deployment.yml
+    namespace: trimmer
+
+trigger:
+  event:
+  - push
+  branch:
+  - master
+
+---
+kind: pipeline
+name: watcher
+steps:
+- name: build
+  image: node:8
+  commands:
+    - make watcher
+
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: piterjs/trimmer-watcher
+    dockerfile: watcher/Dockerfile
+    tags: v0.0.1-${DRONE_COMMIT:0:8}
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+
+- name: deploy
+  image: vallard/drone-kube
+  environment:
+    KUBE_SERVER:
+      from_secret: KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: KUBE_TOKEN
+    KUBE_CA:
+      from_secret: KUBE_CA
+  settings:
+    template: deployment/watcher-deployment.yml
+    namespace: trimmer
+
+trigger:
+  event:
+  - push
+  branch:
+  - master
+
+---
+kind: pipeline
+name: after
+
+steps:
+- name: notify
+  image: appleboy/drone-telegram
+  settings:
+    format: markdown
+    token:
+      from_secret: telegram_token
+    to:
+      from_secret: telegram_to
+    message: >
+      {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.owner}}/{{repo.name}}*
+
+      build: {{build.number}}
+
+      commit: {{commit.branch}}:{{commit.sha}}
+
+      By: {{commit.author}}
+
+      {{commit.message}}
+
+      {{build.link}}
+
+depends_on:
+- app
+- watcher
+
+trigger:
+  status:
+  - success
+  - failure

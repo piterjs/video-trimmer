@@ -1,0 +1,8 @@
+.idea
+node_modules
+node_modules
+*.nedb
+data
+.vscode
+.env
+.DS_Store

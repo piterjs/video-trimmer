@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  trim_db:
+    image: mongo:4-xenial
+    container_name: trim_db
+    command: --smallfiles
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      TZ: 'Europe/Moscow'
+  trim_express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: trim_db

@@ -1,0 +1,10 @@
+.idea
+node_modules
+node_modules
+*.nedb
+app/build
+server/secrets
+data
+.vscode
+.env
+.DS_Store
