@@ -26,6 +26,31 @@ spec:
           value: "3000"
         - name: "MONGO_URL"
           value: "mongodb://db.trimmer.svc.cluster.local:27017/app"
+        - name: "AUTHORIZATION_URL"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: authorizationURL
+        - name: "TOKEN_URL"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: tokenURL
+        - name: "CLIENT_ID"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: clientID
+        - name: "CLIENT_SECRET"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: clientSecret
+        - name: "CALLBACK_URL"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: callbackURL
         volumeMounts:
         - mountPath: /app/secrets
           readOnly: true
