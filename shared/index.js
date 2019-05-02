@@ -15,6 +15,7 @@ const titleSchema = new Schema({
 
 const videoSchema = new Schema({
   original: String,
+  scale: String,
   postroll: String,
   video: [titleSchema],
   status: { type: String, default: 'init' },

@@ -7,7 +7,7 @@ const downloader = async (id, step, url, file) => {
   await writeLog(id, step, `start download ${file} from ${url}`);
   return new Promise((resolve, reject) => {
     let error = '';
-    const workerProcess = spawn(youtubeDL, ['-o', file, url]);
+    const workerProcess = spawn(youtubeDL, ['-f', 'best', '--merge-output-format', 'mp4', '-o', file, url]);
     workerProcess.stdout.on('data', async (data) => {
       await writeLog(id, step, data.toString());
     });

@@ -51,7 +51,19 @@ const watch = async (Video, Service) => {
             await writeLog(video._id, `trim-${i}`, `start trimming video #${i}`);
             video.status = `trimming: ${i}`;
             video = await video.save();
-            await trimVideo(video._id, `trim-${i}`, 'orig.mp4', `${i}-trim.mp4`, video.video[i].start, video.video[i].end);
+            if (video.get('scale')) {
+              await trimVideo(
+                video._id,
+                `trim-${i}`,
+                'orig.mp4',
+                `${i}-trim.mp4`,
+                video.video[i].start,
+                video.video[i].end,
+                ['-vf', `scale=${video.get('scale')}`]
+              );
+            } else {
+              await trimVideo(video._id, `trim-${i}`, 'orig.mp4', `${i}-trim.mp4`, video.video[i].start, video.video[i].end);
+            }
             await writeLog(video._id, `trim-${i}`, `video #${i} was trimmed`);
             await writeLog(video._id, `concat-${i}`, `start concating video #${i}`);
             video.status = `concat: ${i}`;
@@ -85,6 +97,7 @@ const watch = async (Video, Service) => {
           } catch (err) {
             console.error(err);
           }
+          setTimeout(() => watch(Video, Service), 3000);
         }
       });
   });

@@ -32,6 +32,7 @@ export default () => {
   const [state, setState] = useState({
     loading: false,
     original: '',
+    scale: null,
     postroll: 'https://minio.piterjs.org/piterjs/videos/postroll.mp4',
     video: [{ ...videoTemplate }]
   });
@@ -76,6 +77,14 @@ export default () => {
             value={state.original}
             onChange={e => setState({ ...state, original: e.target.value })}
           />
+        </label>
+        <label style={styles.formLabel}>
+          Scale:
+          <select defaultValue={null} onChange={(e) => setState({ ...state, scale: e.target.value })}>
+            <option value={null}>No</option>
+            <option value="1920:1080">1080P</option>
+            <option value="2880:1620">4K</option>
+          </select>
         </label>
         <label style={styles.formLabel}>
           Postroll:

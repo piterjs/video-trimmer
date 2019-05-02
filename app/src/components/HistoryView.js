@@ -33,9 +33,6 @@ export default ({
             .filter((value, index, self) => {
               return self.indexOf(value) === index;
             });
-          if (checked.length === 0) {
-            setChecked(d.tags);
-          }
           setData(d);
         }
       })
@@ -48,7 +45,7 @@ export default ({
     if (interval) {
       clearInterval(interval);
     }
-    interval = setInterval(() => update(), 2000);
+    interval = setInterval(() => update(), 4000);
     return () => {
       clearInterval(interval);
       console.log('clear');

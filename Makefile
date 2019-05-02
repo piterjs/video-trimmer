@@ -2,7 +2,6 @@ app: app-deps app-lint build
 watcher: w-deps w-lint
 shared: s-deps s-lint
 dep:
-	npm i -g npm
 	cd app && npm install
 	cd server && npm install
 	cd watcher && npm install

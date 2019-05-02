@@ -90,14 +90,19 @@ const calculateEndTime = (start, end) => {
   return nt.join(':');
 };
 
-const trimVideo = async (id, step, from, to, start, end) => {
-  const trimming = await ffmpeg(id, step, [
+const trimVideo = async (id, step, from, to, start, end, args = []) => {
+  let params = [
     '-ss', start,
     '-i', from,
-    '-to', calculateEndTime(start, end),
-    '-c', 'copy',
-    to
-  ]);
+    '-to', calculateEndTime(start, end)
+  ];
+  if (args && args.length > 0) {
+    params = [...params, ...args]
+  } else {
+    params = [...params, '-c', 'copy'];
+  }
+  params.push(to);
+  const trimming = await ffmpeg(id, step, params);
   return trimming;
 };
 

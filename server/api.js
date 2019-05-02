@@ -47,6 +47,27 @@ router.get('/list', (req, res) => {
   });
 });
 
+router.get('/logs/:id', (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({ error: 'ID not set' });
+  }
+  Video.findOne({ _id: id })
+    .then(async (video) => {
+      const data = await influx.query(`select * from watcher where video = '${id}'`);
+      res.status(200).json({
+        data: {
+          video: video.toJSON(),
+          log: data
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
+    })
+});
+
 router.get('/youtube/auth', (req, res) => {
   const { query: { code } } = req;
   oauth2Client.getToken(code, (err, token) => {
@@ -72,7 +93,7 @@ router.get('/youtube/auth', (req, res) => {
             res.status(400).json({ error });
             return;
           }
-          res.status(200).json({ data });
+          res.status(303).redirect('/');
         });
       } else {
         svc.token = token;
@@ -81,49 +102,19 @@ router.get('/youtube/auth', (req, res) => {
             res.status(400).json({ error });
             return;
           }
-          res.status(200).json({ data: service });
+          res.status(303).redirect('/');
         });
       }
     });
   });
 });
 
-router.get('/logs/:id', (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    res.status(400).json({ error: 'ID not set' });
-  }
-  Video.findOne({ _id: id })
-    .then(async (video) => {
-      const data = await influx.query(`select * from watcher where video = '${id}'`);
-      res.status(200).json({
-        data: {
-          video: video.toJSON(),
-          log: data
-        }
-      });
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({ error });
-    })
-});
-
 router.get('/youtube', (req, res) => {
-  Service.findOne({ service: 'youtube' }, (err, svc) => {
-    if (err || !svc) {
-      if (err) {
-        console.log(err);
-      }
-      const authUrl = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES
-      });
-      res.redirect(authUrl);
-      return;
-    }
-    res.redirect('/')
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES
   });
+  res.redirect(authUrl);
 });
 
 module.exports = router;
