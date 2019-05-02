@@ -14,8 +14,6 @@ const getData = id =>
       return resp.data;
     });
 
-let interval = null;
-
 export default ({
   match: {
     params: { id }
@@ -42,19 +40,16 @@ export default ({
 
   useEffect(() => {
     update();
-    if (interval) {
-      clearInterval(interval);
-    }
-    interval = setInterval(() => update(), 4000);
-    return () => {
-      clearInterval(interval);
-      console.log('clear');
-    };
     // eslint-disable-next-line
   }, [id]);
   return (
     <div>
-      <h2>Log for: {data && data.video && data.video.original}</h2>
+      <h2>
+        Log for: {data && data.video && data.video.original}{' '}
+        <button onClick={() => update()} style={{ fontSize: '18px' }}>
+          ♻︎
+        </button>
+      </h2>
       <ul>
         {data &&
           data.video &&

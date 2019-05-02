@@ -11,8 +11,6 @@ const getData = () =>
     return resp.json();
   });
 
-let interval;
-
 export default () => {
   const [data, setData] = useState([]);
 
@@ -29,14 +27,6 @@ export default () => {
 
   useEffect(() => {
     update();
-    if (interval) {
-      clearInterval(interval);
-    }
-    interval = setInterval(() => update(), 5000);
-    return () => {
-      clearInterval(interval);
-      console.log('clear');
-    };
     // eslint-disable-next-line
   }, []);
 
@@ -44,7 +34,7 @@ export default () => {
     <div>
       <h2>
         History{' '}
-        <button onClick={() => getData()} style={{ fontSize: '18px' }}>
+        <button onClick={() => update()} style={{ fontSize: '18px' }}>
           ♻︎
         </button>
       </h2>
