@@ -4,8 +4,10 @@ node_modules
 *.nedb
 app/build
 server/secrets
+watcher/secrets
 server/public
 data
+influx-data
 .vscode
 .env
 .DS_Store

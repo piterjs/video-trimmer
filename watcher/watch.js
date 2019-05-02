@@ -1,5 +1,7 @@
 const { execSync } = require('child_process');
 
+const { writeLog } = require('@piterjs/trimmer-shared');
+
 const download = require('./downloader');
 const upload = require('./upload');
 
@@ -28,61 +30,53 @@ const watch = async (Video, Service) => {
           return;
         }
         try {
+          await writeLog(video._id, 'download-stream', 'start downloading stream');
           video.status = 'download: stream';
           video = await video.save();
-          await download(video.original, 'orig.mp4');
-          console.log('original was downloaded');
+          await download(video._id, 'download-stream', video.original, 'orig.mp4');
+          await writeLog(video._id, 'download-stream', 'stream was downloaded');
 
+          await writeLog(video._id, 'download-preroll', 'start downloading preroll');
           video.status = 'download: postroll';
           video = await video.save();
-          await download(video.postroll, 'postroll.mp4');
-          console.log('postroll was downloaded');
+          await download(video._id, 'download-preroll', video.postroll, 'postroll.mp4');
+          await writeLog(video._id, 'download-preroll', 'preroll was downloaded');
 
           for (let i = 0; i < video.video.length; i += 1) {
-            console.log(`download ${i} preroll`);
+            await writeLog(video._id, `download-preroll-${i}`, `download ${i} preroll`);
             video.status = `download: ${i} preroll`;
             video = await video.save();
-            await download(video.video[i].preroll, `${i}-preroll.mp4`);
-            console.log(`${i} preroll was downloaded`);
-          }
-          console.log('prerolls was downloaded');
-
-          for (let i = 0; i < video.video.length; i += 1) {
-            console.log(`trim ${i}: video`);
+            await download(video._id, `download-preroll-${i}`, video.video[i].preroll, `${i}-preroll.mp4`);
+            await writeLog(video._id, `download-preroll-${i}`, `${i} preroll was downloaded`);
+            await writeLog(video._id, `trim-${i}`, `start trimming video #${i}`);
             video.status = `trimming ${i}`;
             video = await video.save();
-            await trimVideo('orig.mp4', `${i}-trim.mp4`, video.video[i].start, video.video[i].end);
-            console.log(`${i} video was trimmed`);
-          }
-          console.log('videos was trimmed');
-
-          for (let i = 0; i < video.video.length; i += 1) {
-            console.log(`concat ${i} video`);
+            await trimVideo(video._id, `trim-${i}`, 'orig.mp4', `${i}-trim.mp4`, video.video[i].start, video.video[i].end);
+            await writeLog(video._id, `trim-${i}`, `video #${i} was trimmed`);
+            await writeLog(video._id, `concat-${i}`, `start concating video #${i}`);
             video.status = `concat: ${i}`;
             video = await video.save();
-            await concatVideo(`${i}-preroll.mp4`, `${i}-trim.mp4`, 'postroll.mp4', `${i}-video.mp4`, video.video[i].start, video.video[i].end);
-            console.log(`${i} video was concated`);
-          }
-          console.log('end concating videos');
-          console.log('remove trims & prerolls');
-          for (let i = 0; i < video.video.length; i += 1) {
+            await concatVideo(video._id, `concat-${i}`, `${i}-preroll.mp4`, `${i}-trim.mp4`, 'postroll.mp4', `${i}-video.mp4`, video.video[i].start, video.video[i].end);
+            await writeLog(video._id, `concat-${i}`, `video #${i} was concat`);
+            await writeLog(video._id, `concat-${i}`, `remove trims & prerolls for video ${i}`);
             execSync(`rm -rf ${i}-trim.mp4 ${i}-preroll.mp4`);
-          }
-          for (let i = 0; i < video.video.length; i += 1) {
-            console.log(`upload video ${i}`);
+            await writeLog(video._id, `upload-${i}`, `start uploading video ${i}`);
             video.status = `upload: ${i}`;
             video = await video.save();
             const file = `${i}-video.mp4`;
-            await upload(svc.token, video.video[i], file);
+            await upload(video._id, `upload-${i}`, svc.token, video.video[i], file);
+            await writeLog(video._id, `upload-${i}`, `video ${i} was uploaded`);
+            await writeLog(video._id, `upload-${i}`, `------- video ${i} was ready ------- `);
             execSync(`rm -rf ${file}`);
-            console.log(`${i} video was concated`);
           }
+          await writeLog(video._id, 'end', 'worker was finished');
           video.status = 'finished';
           video = await video.save();
           execSync('rm -rf *.mp4');
-          console.log('finished');
           setTimeout(() => watch(Video, Service), 3000);
         } catch (err) {
+          await writeLog(video._id, 'error', `error: ${err}`);
+          video.status = 'finished';
           console.error('Error', err);
           video.status = 'error';
           await video.save();

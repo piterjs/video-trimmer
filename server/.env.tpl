@@ -5,3 +5,5 @@ export TOKEN_URL=
 export CLIENT_ID=
 export CLIENT_SECRET=
 export CALLBACK_URL=
+export INFLUX_HOST=localhost
+export INFLUX_PORT=8086

@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { google } = require('googleapis');
 
-const { videoSchema, serviceSchema } = require('@piterjs/trimmer-shared');
+const { influx, videoSchema, serviceSchema } = require('@piterjs/trimmer-shared');
 
 const OAuth2 = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
@@ -86,6 +86,27 @@ router.get('/youtube/auth', (req, res) => {
       }
     });
   });
+});
+
+router.get('/logs/:id', (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({ error: 'ID not set' });
+  }
+  Video.findOne({ _id: id })
+    .then(async (video) => {
+      const data = await influx.query(`select * from watcher where video = '${id}'`);
+      res.status(200).json({
+        data: {
+          video: video.toJSON(),
+          log: data
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
+    })
 });
 
 router.get('/youtube', (req, res) => {

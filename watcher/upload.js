@@ -1,49 +1,45 @@
 const fs = require('fs');
-const Youtube = require('youtube-api');
+const { google } = require('googleapis');
+const { writeLog } = require('@piterjs/trimmer-shared');
 
-const credentials = require('./client_id.json');
-const clientId = credentials.installed.client_id;
+const OAuth2 = google.auth.OAuth2;
+const credentials = require('./secrets/client_id.json');
 const clientSecret = credentials.installed.client_secret;
+const clientId = credentials.installed.client_id;
 const redirectUrl = credentials.installed.redirect_uris[0];
+const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
-let oauth = Youtube.authenticate({
-  type: 'oauth',
-  client_id: clientId,
-  client_secret: clientSecret,
-  redirect_url: redirectUrl
-});
-
-const upload = (token, info, file) => {
-  oauth.setCredentials(token);
-  let interval = null;
-  return new Promise((resolve, reject) => {
-    var req = Youtube.videos.insert({
-      resource: {
-        snippet: {
-          title: info.title,
-          description: info.description,
-          tags: info.tags
-        },
-        status: {
-          privacyStatus: 'private'
-        }
-      },
-      part: 'snippet,status',
-      media: {
-        body: fs.createReadStream(file)
-      }
-    }, (err, data) => {
-      clearInterval(interval);
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    });
-    interval = setInterval(function () {
-      console.log(`${req.req.connection._bytesDispatched} bytes uploaded.`);
-    }, 250);
+const upload = async (id, step, token, info, file) => {
+  oauth2Client.credentials = token;
+  const youtube = google.youtube({
+    version: 'v3',
+    auth: oauth2Client
   });
+  const fileSize = fs.statSync(file).size;
+  const res = await youtube.videos.insert({
+    part: 'id,snippet,status',
+    notifySubscribers: false,
+    requestBody: {
+      snippet: {
+        title: info.title,
+        description: info.description,
+        tags: info.tags
+      },
+      status: {
+        privacyStatus: 'private'
+      }
+    },
+    media: {
+      body: fs.createReadStream(file)
+    }
+  }, {
+    onUploadProgress: async (evt) => {
+      const progress = (evt.bytesRead / fileSize) * 100;
+      await writeLog(id, step, `${Math.round(progress)}% complete`);
+    }
+  });
+  await writeLog(id, step, res.data);
+  return res.data;
 };
 
 module.exports = upload;

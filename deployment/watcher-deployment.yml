@@ -22,3 +22,17 @@ spec:
         env:
         - name: "MONGO_URL"
           value: "mongodb://db.trimmer.svc.cluster.local:27017/app"
+        - name: "INFLUX_HOST"
+          value: "influx.trimmer.svc.cluster.local"
+        - name: "INFLUX_PORT"
+          value: "8086"
+        - name: "INFLUX_DB"
+          value: "watcher"
+        volumeMounts:
+        - mountPath: /app/secrets
+          readOnly: true
+          name: client
+      volumes:
+      - name: client
+        secret:
+          secretName: client

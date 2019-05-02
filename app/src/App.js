@@ -5,12 +5,9 @@ import Header from './components/Header';
 
 import Index from './components/Index';
 import HistoryList from './components/HistoryList';
+import HistoryView from './components/HistoryView';
 
 import './App.css';
-
-function HistoryView() {
-  return <h1>Titile</h1>;
-}
 
 function App() {
   return (
@@ -18,7 +15,7 @@ function App() {
       <Header/>
       <Switch>
         <Route path="/" exact component={Index} />
-        <Route path="/history" component={HistoryList} />
+        <Route path="/history" exact component={HistoryList} />
         <Route path="/history/:id" component={HistoryView} />
       </Switch>
     </Router>

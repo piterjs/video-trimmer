@@ -1,34 +1,58 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+const getData = () =>
+  fetch('/api/list', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(resp => {
+    return resp.json();
+  });
+
+let interval;
 
 export default () => {
   const [data, setData] = useState([]);
-  const getData = () =>
-    fetch('/api/list', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
+
+  const update = () =>
+    getData()
       .then(resp => {
-        return resp.json();
-      })
-      .then(resp => {
-        setData(resp.data);
-        setTimeout(() => getData(), 5000);
+        if (resp.data) {
+          setData(resp.data);
+        }
       })
       .catch(err => {
         console.log(err);
       });
 
-  useEffect(getData, []);
+  useEffect(() => {
+    update();
+    if (interval) {
+      clearInterval(interval);
+    }
+    interval = setInterval(() => update(), 5000);
+    return () => {
+      clearInterval(interval);
+      console.log('clear');
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div>
-      <h2>History</h2>
+      <h2>
+        History{' '}
+        <button onClick={() => getData()} style={{ fontSize: '18px' }}>
+          ♻︎
+        </button>
+      </h2>
       <ul>
         {data.map(v => (
           <li key={v._id}>
-            {v.original} - status: {v.status}, created: {v.created}, updated:{' '}
-            {v.updated}
+            <Link to={`/history/${v._id}`}>{v.original}</Link> - status:{' '}
+            {v.status}, created: {v.created}, updated: {v.updated}
             <br />
             Videos:
             <ol>

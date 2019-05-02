@@ -1,26 +1,26 @@
 const { execSync, spawn } = require('child_process');
+const { writeLog } = require('@piterjs/trimmer-shared');
 
 const ffmpegExec = execSync('which ffmpeg')
   .toString()
   .trim();
 
-const ffmpeg = args => {
-  return new Promise((resolve, reject) => {
+const ffmpeg = (id, step, args) => {
+  return new Promise(async (resolve, reject) => {
     let error = '';
     args.push('-y');
-    console.log(`ffmpeg ${args.join(' ')}`);
+    await writeLog(id, step, `ffmpeg ${args.join(' ')}`);
     const workerProcess = spawn(ffmpegExec, args, { shell: true });
-    workerProcess.stdout.on('data', (data) => {
-      console.log(data.toString());
+    workerProcess.stdout.on('data', async (data) => {
+      await writeLog(id, step, data.toString());
     });
 
-    workerProcess.stderr.on('data', (data) => {
-      error += data.toString();
-      console.log(data.toString());
+    workerProcess.stderr.on('data', async (data) => {
+      await writeLog(id, step, data.toString());
     });
 
-    workerProcess.on('close', (code) => {
-      console.log('ffmpeg end with code ' + code);
+    workerProcess.on('close', async (code) => {
+      await writeLog(id, step, `ffmpeg end with code ${code}`);
       if (code !== 0) {
         reject(error);
       } else {
@@ -29,7 +29,7 @@ const ffmpeg = args => {
     });
   });
 };
-const concatVideo = async (one, two, three, to, start, end) => {
+const concatVideo = async (id, step, one, two, three, to, start, end) => {
   const time = calculateEndTime(start, end);
   const [h, m, s] = time.split(':');
   let nt = 0;
@@ -42,7 +42,7 @@ const concatVideo = async (one, two, three, to, start, end) => {
     '[2:v]fade=type=in:duration=1,setpts=PTS-STARTPTS[v2];',
     '[v0][3:a] [v1][1:a] [v2][3:a] concat=n=3:v=1:a=1 [v] [a]'
   ];
-  const c = await ffmpeg([
+  const c = await ffmpeg(id, step, [
     '-i', one,
     '-i', two,
     '-i', three,
@@ -90,8 +90,8 @@ const calculateEndTime = (start, end) => {
   return nt.join(':');
 };
 
-const trimVideo = async (from, to, start, end) => {
-  const trimming = await ffmpeg([
+const trimVideo = async (id, step, from, to, start, end) => {
+  const trimming = await ffmpeg(id, step, [
     '-ss', start,
     '-i', from,
     '-to', calculateEndTime(start, end),

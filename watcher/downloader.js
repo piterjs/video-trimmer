@@ -1,22 +1,23 @@
 const { execSync, spawn } = require('child_process');
+const { writeLog } = require('@piterjs/trimmer-shared');
 
 const youtubeDL = execSync('which youtube-dl').toString().trim();
 
-const downloader = (url, file) => {
-  console.log(`start download ${file} from ${url}`);
+const downloader = async (id, step, url, file) => {
+  await writeLog(id, step, `start download ${file} from ${url}`);
   return new Promise((resolve, reject) => {
     let error = '';
     const workerProcess = spawn(youtubeDL, ['-o', file, url]);
-    workerProcess.stdout.on('data', (data) => {
-      console.log(data.toString());
+    workerProcess.stdout.on('data', async (data) => {
+      await writeLog(id, step, data.toString());
     });
 
-    workerProcess.stderr.on('data', (data) => {
-      error += data.toString();
+    workerProcess.stderr.on('data', async (data) => {
+      await writeLog(id, step, data.toString());
     });
 
-    workerProcess.on('close', (code) => {
-      console.log('download end with code ' + code);
+    workerProcess.on('close', async (code) => {
+      await writeLog(id, step, `download end with code ${code}`);
       if (code !== 0) {
         reject(error);
       } else {

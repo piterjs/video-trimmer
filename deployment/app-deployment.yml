@@ -24,6 +24,12 @@ spec:
         env:
         - name: "PORT"
           value: "3000"
+        - name: "INFLUX_HOST"
+          value: "influx.trimmer.svc.cluster.local"
+        - name: "INFLUX_PORT"
+          value: "8086"
+        - name: "INFLUX_DB"
+          value: "watcher"
         - name: "MONGO_URL"
           value: "mongodb://db.trimmer.svc.cluster.local:27017/app"
         - name: "AUTHORIZATION_URL"

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { influx, writeLog } = require('./influx');
+
 const Schema = mongoose.Schema;
 
 const titleSchema = new Schema({
@@ -41,5 +43,7 @@ module.exports = {
   videoSchema,
   titleSchema,
   serviceSchema,
-  tokenSchema
+  tokenSchema,
+  influx,
+  writeLog
 };
