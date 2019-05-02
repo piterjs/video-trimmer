@@ -49,7 +49,7 @@ const watch = async (Video, Service) => {
             await download(video._id, `download-preroll-${i}`, video.video[i].preroll, `${i}-preroll.mp4`);
             await writeLog(video._id, `download-preroll-${i}`, `${i} preroll was downloaded`);
             await writeLog(video._id, `trim-${i}`, `start trimming video #${i}`);
-            video.status = `trimming ${i}`;
+            video.status = `trimming: ${i}`;
             video = await video.save();
             await trimVideo(video._id, `trim-${i}`, 'orig.mp4', `${i}-trim.mp4`, video.video[i].start, video.video[i].end);
             await writeLog(video._id, `trim-${i}`, `video #${i} was trimmed`);

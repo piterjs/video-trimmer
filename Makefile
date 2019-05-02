@@ -1,6 +1,16 @@
 app: app-deps app-lint build
 watcher: w-deps w-lint
 shared: s-deps s-lint
+dep:
+	npm i -g npm
+	cd app && npm install
+	cd server && npm install
+	cd watcher && npm install
+	cd shared && npm install
+templates:
+	cp server/.env.tpl server/.env
+	mkdir server/secrets
+	mkdir watcher/secrets
 app-deps:
 	npm i -g npm
 	cd app && npm install
