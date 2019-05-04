@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { google } = require('googleapis');
 
-const { influx, videoSchema, serviceSchema } = require('@piterjs/trimmer-shared');
+const { influx, videoSchema, serviceSchema, buildSchema } = require('@piterjs/trimmer-shared');
 
 const OAuth2 = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
@@ -16,6 +16,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 const Video = mongoose.model('Video', videoSchema);
+const Build = mongoose.model('Build', buildSchema);
 const Service = mongoose.model('Service', serviceSchema);
 
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -25,47 +26,127 @@ db.once('open', () => {
 
 const router = express.Router();
 
-router.post('/add', (req, res) => {
+router.post('/add', async (req, res) => {
   const { body } = req;
-  const video = new Video(body);
-  video.save((error, data) => {
-    if (error) {
-      res.status(400).json({ error });
-      return;
-    }
-    res.status(200).json({ data });
-  });
+  try {
+    const data = await Video.create(body);
+    const build = await Build.create({ video: data._id });
+    data.builds = [build._id];
+    await data.save();
+    res.status(200).json({
+      data: { ...data.toJSON(), builds: [build.toJSON()] }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'server error' });
+  }
 });
 
-router.get('/list', (req, res) => {
-  Video.find((error, data) => {
-    if (error) {
-      res.status(400).json({ error });
-      return;
-    }
+router.get('/list', async (req, res) => {
+  try {
+    const data = await Video.find().populate('builds').exec();
     res.status(200).json({ data });
-  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'server error' });
+  }
 });
 
-router.get('/logs/:id', (req, res) => {
+router.get('/video/:id', async (req, res) => {
   const { id } = req.params;
   if (!id) {
     res.status(400).json({ error: 'ID not set' });
+    return;
   }
-  Video.findOne({ _id: id })
-    .then(async (video) => {
-      const data = await influx.query(`select * from watcher where video = '${id}'`);
-      res.status(200).json({
-        data: {
-          video: video.toJSON(),
-          log: data
-        }
-      });
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({ error });
-    })
+  try {
+    const data = await Video.findOne({ _id: id }).populate('builds').exec();
+    if (!data) {
+      res.status(404).json({ error: 'not found' });
+      return;
+    }
+    res.status(200).json({
+      data: data.toJSON()
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.get('/video/:id/restart', async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({ error: 'ID not set' });
+    return;
+  }
+  try {
+    const data = await Video.findOne({ _id: id }).populate('builds').exec();
+    if (!data) {
+      res.status(404).json({ error: 'not found' });
+      return;
+    }
+    const build = await Build.create({ video: data._id });
+    data.builds = [...data.builds.map(v => v._id), build._id];
+    await data.save();
+    res.status(200).json({
+      data: data.toJSON()
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+router.get('/build/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({ error: 'ID not set' });
+    return;
+  }
+  try {
+    const build = await Build.findOne({ _id: id }).populate('video').exec();
+    if (!build) {
+      res.status(404).json({ error: 'not found' });
+      return;
+    }
+    const log = await influx.query(`select * from "watcher" where build = '${id}'`);
+    res.status(200).json({
+      build,
+      steps: log.map(v => v.step).filter((v, i, self) => self.indexOf(v) === i),
+      log
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
+router.get('/build/:id/log', async (req, res) => {
+  const { params: { id }, query: { offset } } = req;
+  if (!id) {
+    res.status(400).json({ error: 'ID not set' });
+    return;
+  }
+  if (!offset) {
+    res.status(400).json({ error: 'ID not set' });
+    return;
+  }
+  try {
+    const build = await Build.findOne({ _id: id }).populate('video').exec();
+    if (!build) {
+      res.status(404).json({ error: 'not found' });
+      return;
+    }
+    const log = await influx.query(`select * from "watcher" where build = '${id}' limit 1000 offset ${offset}`);
+    res.status(200).json({
+      build,
+      steps: log.map(v => v.step).filter((v, i, self) => self.indexOf(v) === i),
+      log
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
 });
 
 router.get('/youtube/auth', (req, res) => {

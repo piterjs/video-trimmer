@@ -16,10 +16,10 @@ const styles = {
 export default () => (
   <div style={styles.header}>
     <Link style={styles.link} to="/">
-      Add new
-    </Link>
-    <Link style={styles.link} to="/history">
       History
+    </Link>
+    <Link style={styles.link} to="/add">
+      Add new
     </Link>
   </div>
 );

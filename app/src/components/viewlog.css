@@ -1,0 +1,48 @@
+.logbox {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.logbox-filter {
+  width: 200px;
+  margin-right: 10px;
+}
+.logbox-filter label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.logbox-filter label input {
+  margin-right: 5px;
+}
+.logbox-log {
+  width: calc(100% - 210px);
+  padding: 16px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 16px;
+  font-family: Roboto Mono,monospace;
+  font-weight: 300;
+  background-color: #1e375a;
+  border-radius: 6px;
+  box-shadow: 0 0 8px 1px #e8eaed;
+  box-sizing: border-box;
+}
+
+.logbox-log table {
+  line-height: 26px;
+}
+
+.logbox-log table .pos {
+  padding: 0 10px 0 0;
+  color: #8c96a1;
+  user-select: none;
+  white-space: nowrap;
+  width: 1px;
+  vertical-align: top;
+}
+
+.logbox-log table .text {
+  word-break: break-all;
+  padding-right: 15px;
+}

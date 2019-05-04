@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Header from './components/Header';
 
-import Index from './components/Index';
+import AddNew from './components/Add';
 import HistoryList from './components/HistoryList';
 import HistoryView from './components/HistoryView';
+import ViewLog from './components/ViewLog';
 
 import './App.css';
 
@@ -14,9 +15,10 @@ function App() {
     <Router>
       <Header/>
       <Switch>
-        <Route path="/" exact component={Index} />
-        <Route path="/history" exact component={HistoryList} />
-        <Route path="/history/:id" component={HistoryView} />
+        <Route path="/" exact component={HistoryList} />
+        <Route path="/history/:id" exact component={HistoryView} />
+        <Route path="/history/:id/:build_id" component={ViewLog} />
+        <Route path="/add" component={AddNew} />
       </Switch>
     </Router>
   );

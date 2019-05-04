@@ -31,6 +31,7 @@ https://twitter.com/gopiterjs
 export default () => {
   const [state, setState] = useState({
     loading: false,
+    title: '',
     original: '',
     scale: null,
     postroll: 'https://minio.piterjs.org/piterjs/videos/postroll.mp4',
@@ -70,6 +71,14 @@ export default () => {
           addVideo();
         }}
       >
+        <label style={styles.formLabel}>
+          Title:
+          <input
+            style={{ width: '100%' }}
+            value={state.title}
+            onChange={e => setState({ ...state, title: e.target.value })}
+          />
+        </label>
         <label style={styles.formLabel}>
           Stream:
           <input

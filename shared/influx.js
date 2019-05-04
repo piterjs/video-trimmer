@@ -11,7 +11,7 @@ const influx = new inf.InfluxDB({
         str: inf.FieldType.STRING
       },
       tags: [
-        'video',
+        'build',
         'step'
       ]
     }
@@ -31,14 +31,14 @@ influx.getDatabaseNames()
     console.error('Error creating Influx database!', err);
   });
 
-const writeLog = (video, step, str) => {
+const writeLog = (build, step, str) => {
   if (typeof str === 'object') {
     str = JSON.stringify(str);
   }
   influx.writePoints([
     {
       measurement: 'watcher',
-      tags: { video, step },
+      tags: { build, step },
       fields: { str }
     }
   ])

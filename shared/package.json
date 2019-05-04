@@ -1,6 +1,6 @@
 {
   "name": "@piterjs/trimmer-shared",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "shared package",
   "main": "index.js",
   "homepage": "https://github.com/piterjs/video-trimmer",
