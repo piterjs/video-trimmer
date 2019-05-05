@@ -1,0 +1,311 @@
+swagger: "2.0"
+info:
+  description: "PiterJS Video Trimmer API."
+  version: "1.0.0"
+  title: "Video Trimmer"
+  contact:
+    email: "hi@piterjs.dev"
+  license:
+    name: "MIT"
+    url: "https://github.com/piterjs/video-trimmer/blob/master/LICENSE.md"
+host: "trimmer.piterjs.dev"
+basePath: "/api"
+tags:
+- name: "user"
+  description: "Operations about user"
+- name: "video"
+  description: "Operations about video"
+schemes:
+- "https"
+paths:
+  /logout:
+    get:
+      tags:
+      - "user"
+      description: "Logs out current logged in user session"
+      responses:
+        default:
+          description: OK
+  /youtube:
+    get:
+      tags:
+      - "user"
+      description: "Auth in youtube"
+      responses:
+        default:
+          description: OK
+  /me:
+    get:
+      tags:
+      - "user"
+      description: "Get current user information"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/User"
+  /add:
+    post:
+      tags:
+      - "video"
+      description: "Add new video"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/Video"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Video"
+  /list:
+    get:
+      tags:
+      - "video"
+      description: "Get video list"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VideoResponse"
+  /video/{id}:
+    get:
+      tags:
+      - "video"
+      description: "Get video list"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of video"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/VideoResponse"
+  /video/{id}/restart:
+    get:
+      tags:
+      - "video"
+      description: "Restart video trimming"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of video"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: OK
+  /build/{id}:
+    get:
+      tags:
+      - "video"
+      description: "Get build log by id"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of build"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/BuildResponse"
+  /build/{id}/log:
+    get:
+      tags:
+      - "video"
+      description: "Get build log by id"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of build"
+        required: true
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Log offset"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/BuildResponse"
+definitions:
+  BuildResponse:
+    type: "object"
+    properties:
+      build:
+        $ref: "#/definitions/Build"
+      steps:
+        type: "array"
+        items:
+          type: "string"
+      log:
+        type: "object"
+        properties:
+          build:
+            type: "string"
+          step:
+            type: "string"
+          str:
+            type: "string"
+  Titles:
+    type: "object"
+    properties:
+      preroll:
+        type: "string"
+        description: "Preroll URL"
+      start:
+        type: "string"
+        description: "Start time. format 00:00:00"
+      end:
+        type: "string"
+        description: "End time. format 00:00:00"
+      title:
+        type: "string"
+        description: "Title"
+      description:
+        type: "string"
+        description: "Description"
+      tags:
+        type: "string"
+        description: "Tags"
+  Video:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        description: "Playlist title"
+      original:
+        type: "string"
+        description: "Stream URL"
+      scale:
+        type: "string"
+        description: "Scale all videos to this size"
+        default: ""
+      postroll:
+        type: "string"
+        description: "Postroll URL"
+      video:
+        type: "array"
+        items:
+          $ref: "#/definitions/Titles"
+      created:
+        type: "string"
+        format: "date-time"
+      updated:
+        type: "string"
+        format: "date-time"
+  VideoResponse:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        description: "ID"
+      title:
+        type: "string"
+        description: "Playlist title"
+      original:
+        type: "string"
+        description: "Stream URL"
+      scale:
+        type: "string"
+        description: "Scale all videos to this size"
+        default: ""
+      postroll:
+        type: "string"
+        description: "Postroll URL"
+      video:
+        type: "array"
+        items:
+          $ref: "#/definitions/Titles"
+      builds:
+        type: "array"
+        items:
+          $ref: "#/definitions/Build"
+      created:
+        type: "string"
+        format: "date-time"
+      updated:
+        type: "string"
+        format: "date-time"
+  Build:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        description: "ID"
+      video:
+        type: "string"
+        description: "Video ID"
+      status:
+        type: "string"
+        default: "init"
+      created:
+        type: "string"
+        format: "date-time"
+      updated:
+        type: "string"
+        format: "date-time"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      login:
+        type: "string"
+      avatar:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+          url:
+            type: "string"
+      youtube:
+        type: "boolean"
+        description: "Is auth in youtube"
+      services:
+        type: "object"
+        properties:
+          _id:
+            type: "string"
+          key:
+            type: "string"
+          name:
+            type: "string"
+          homeUrl:
+            type: "string"
+          iconUrl:
+            type: "string"

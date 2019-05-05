@@ -3,7 +3,8 @@ const {
   titleSchema,
   serviceSchema,
   tokenSchema,
-  buildSchema
+  buildSchema,
+  hubSchema
 } = require('./schemas');
 
 const { influx, writeLog } = require('./influx');
@@ -14,6 +15,7 @@ module.exports = {
   serviceSchema,
   tokenSchema,
   buildSchema,
+  hubSchema,
   influx,
   writeLog
 };

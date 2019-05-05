@@ -57,6 +57,11 @@ spec:
             configMapKeyRef:
               name: app
               key: callbackURL
+        - name: "OAUTHBASE_URL"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: baseURL
         volumeMounts:
         - mountPath: /app/secrets
           readOnly: true

@@ -3,6 +3,7 @@ const http = require('http');
 const path = require('path');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const axios = require('axios');
 const OAuth2Strategy = require('passport-oauth2');
 
 const normalizePort = require('./helpers/normalizePort');
@@ -11,6 +12,8 @@ const apiRouter = require('./api');
 const isAuth = require('./helpers/isAuth');
 
 const staticPath = path.join(__dirname, 'public');
+
+const { Hub } = require('./models');
 
 const app = express();
 
@@ -27,8 +30,34 @@ passport.use(new OAuth2Strategy({
   scope: '0-0-0-0-0',
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CALLBACK_URL
-}, (accessToken, refreshToken, profile, done) => {
-  done(null, profile);
+}, async (accessToken, refreshToken, profile, done) => {
+  const params = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  };
+  try {
+    const [user, services] = await Promise.all([
+      axios.get(`${process.env.OAUTHBASE_URL}/api/rest/users/me?fields=id,name,login,avatar`, params).then(v => v.data),
+      axios.get(`${process.env.OAUTHBASE_URL}/api/rest/services/header?fields=id,name,applicationName,homeUrl,iconUrl`, params).then(v => v.data)
+    ]);
+    const hub = await Hub.find().exec();
+    console.log(hub);
+    for (let i = 0; i < services.length; i += 1) {
+      if (!hub.find(v => v.key === services[i].id)) {
+        await Hub.create({
+          key: services[i].id,
+          name: services[i].name,
+          homeUrl: services[i].homeUrl,
+          iconUrl: services[i].iconUrl
+        });
+      }
+    }
+    done(null, user);
+  } catch (error) {
+    console.error(error);
+    done(error, null);
+  }
 }));
 passport.serializeUser((user, done) => {
   done(null, user);

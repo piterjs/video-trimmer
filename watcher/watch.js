@@ -74,7 +74,8 @@ const watch = async (Build, Service) => {
             await concatVideo(
               build._id, `concat-${i}`,
               `${i}-preroll.mp4`, `${i}-trim.mp4`, 'postroll.mp4',
-              `${i}-video.mp4`, video.video[i].start, video.video[i].end
+              `${i}-video.mp4`,
+              video.video[i].start, video.video[i].end
             );
             await writeLog(build._id, `concat-${i}`, `build #${i} was concat`);
             await writeLog(build._id, `concat-${i}`, `remove trims & prerolls for build ${i}`);
@@ -82,11 +83,10 @@ const watch = async (Build, Service) => {
             await writeLog(build._id, `upload-${i}`, `start uploading build ${i}`);
             build.status = `upload: ${i}`;
             build = await build.save();
-            const file = `${i}-build.mp4`;
-            await upload(build._id, `upload-${i}`, svc.token, video.video[i], file);
+            await upload(build._id, `upload-${i}`, svc.token, video.video[i], `${i}-video.mp4`);
             await writeLog(build._id, `upload-${i}`, `video ${i} was uploaded`);
             await writeLog(build._id, `upload-${i}`, `------- video ${i} was ready ------- `);
-            execSync(`rm -rf ${file}`);
+            execSync(`rm -rf ${i}-video.mp4`);
           }
           await writeLog(build._id, 'end', `build ${build._id} was finished`);
           build.status = 'finished';

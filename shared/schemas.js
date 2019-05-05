@@ -50,10 +50,18 @@ buildSchema.pre('save', function (next) {
   next();
 });
 
+const hubSchema = new Schema({
+  key: String,
+  name: String,
+  homeUrl: String,
+  iconUrl: String
+});
+
 module.exports = {
   titleSchema,
   videoSchema,
   serviceSchema,
   tokenSchema,
-  buildSchema
+  buildSchema,
+  hubSchema
 };

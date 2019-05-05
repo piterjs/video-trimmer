@@ -1,8 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const { google } = require('googleapis');
 
-const { influx, videoSchema, serviceSchema, buildSchema } = require('@piterjs/trimmer-shared');
+const { influx } = require('@piterjs/trimmer-shared');
+
+const { Video, Build, Service, Hub } = require('./models');
 
 const OAuth2 = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
@@ -12,19 +13,23 @@ const clientId = credentials.installed.client_id;
 const redirectUrl = credentials.installed.redirect_uris[0];
 const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
-const db = mongoose.connection;
+const router = express.Router();
 
-const Video = mongoose.model('Video', videoSchema);
-const Build = mongoose.model('Build', buildSchema);
-const Service = mongoose.model('Service', serviceSchema);
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('mongodb connected');
+router.get('/me', async (req, res) => {
+  const services = await Hub.find().exec();
+  const ytauth = await Service.findOne({ service: 'youtube' }).exec();
+  const youtube = ytauth._id !== null;
+  res.status(200).json({
+    ...req.user,
+    youtube,
+    services
+  });
 });
 
-const router = express.Router();
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/auth');
+});
 
 router.post('/add', async (req, res) => {
   const { body } = req;
