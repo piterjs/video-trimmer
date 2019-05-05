@@ -32,6 +32,8 @@ const watch = async (Build, Service) => {
           return;
         }
         try {
+          build.status = 'starting';
+          build = await build.save();
           const { video } = build;
           await writeLog(build._id, 'download-stream', 'start downloading stream');
           build.status = 'download: stream';

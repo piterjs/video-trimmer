@@ -14,5 +14,7 @@ const Service = mongoose.model('Service', serviceSchema);
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
   console.log('mongodb connected');
-  watch(Build, Service);
+  setTimeout(() => {
+    watch(Build, Service);
+  }, Math.round(5 + Math.random() * (10 - 5)))
 });
