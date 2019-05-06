@@ -62,22 +62,22 @@ spec:
             configMapKeyRef:
               name: app
               key: baseURL
-       - name: "KUBE_SERVER"
+        - name: "KUBE_SERVER"
           valueFrom:
             configMapKeyRef:
               name: app
               key: kube_url
-       - name: "KUBE_NAMESPACE"
+        - name: "KUBE_NAMESPACE"
           valueFrom:
             configMapKeyRef:
               name: app
               key: kube_namespace
-       - name: "KUBE_CA"
+        - name: "KUBE_CA"
           valueFrom:
             configMapKeyRef:
               name: app
               key: kube_ca
-       - name: "KUBE_TOKEN"
+        - name: "KUBE_TOKEN"
           valueFrom:
             configMapKeyRef:
               name: app
