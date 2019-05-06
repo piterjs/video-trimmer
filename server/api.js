@@ -127,6 +127,7 @@ router.get('/build/:id', async (req, res) => {
         `upload-${i}`
       ]);
     }
+    steps.push('error');
     steps.push('end');
     res.status(200).json({
       build,
@@ -155,7 +156,7 @@ router.get('/build/:id/log', async (req, res) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
-    const log = await influx.query(`select * from "watcher" where build = '${id}' and step = '${step}' limit 100 offset ${offset}`);
+    const log = await influx.query(`select * from "watcher" where build = '${id}' and step = '${step}' offset ${offset}`);
     res.status(200).json({
       build,
       log

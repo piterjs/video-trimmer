@@ -92,15 +92,15 @@ steps:
     channel:
       from_secret: rocket_channel
     message: >
-      {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.owner}}/{{repo.name}}*
+      {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.fullname}}*
 
       build: {{build.number}}
 
-      commit: {{commit.branch}}:{{commit.sha}}
+      commit: {{build.branch}}:{{build.commit}}
 
-      By: {{commit.author}}
+      By: {{build.author}}
 
-      {{commit.message}}
+      {{build.message}}
 
       {{build.link}}
 
