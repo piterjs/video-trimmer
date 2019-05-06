@@ -3,10 +3,25 @@ import React from 'react';
 import { ReactComponent as ReloadIcon } from '../assets/icons/reload.svg';
 import { ReactComponent as FullScreenIcon } from '../assets/icons/fullscreen.svg';
 import { ReactComponent as ExitFullScreenIcon } from '../assets/icons/exit_fullscreen.svg';
+import { ReactComponent as WaitingIcon } from '../assets/icons/clock.svg';
+import { ReactComponent as WIPIcon } from '../assets/icons/wip.svg';
+import { ReactComponent as FinishIcon } from '../assets/icons/check.svg';
+import { ReactComponent as ErrorIcon } from '../assets/icons/close.svg';
 
 import './viewlog.css';
 
 const REFRESH_TIME = 2000;
+
+const StatusIcon = ({ status }) => {
+  if (status === 'waiting') {
+    return <WaitingIcon width="24" height="24" />;
+  } else if (status === 'in-progress') {
+    return <WIPIcon width="24" height="24" />;
+  } else if (status === 'error') {
+    return <ErrorIcon width="24" height="24" />;
+  }
+  return <FinishIcon width="24" height="24" />;
+};
 
 export default class ViewLog extends React.Component {
   state = {
@@ -86,6 +101,7 @@ export default class ViewLog extends React.Component {
       .then(data => {
         const ns = {
           build: { ...build, ...data.build },
+          steps: data.steps,
           log: {
             ...log,
             [step]:
@@ -158,23 +174,27 @@ export default class ViewLog extends React.Component {
         </label>
         <h4>Log:</h4>
         <div className="logbox">
-          <div className="logbox-filter">
+          <div className="logbox-left">
             {steps &&
               steps.map(v => (
-                <label key={v}>
-                  <input
-                    type="radio"
-                    name="filter"
-                    value={v}
-                    onChange={e => {
-                      this.setState({ step: e.target.value }, () =>
-                        this.getLog()
-                      );
-                    }}
-                    checked={v === step}
-                  />
-                  {v}
-                </label>
+                <div className="logbox-filter" key={v.name}>
+                  <div className="logbox-filter-header">
+                    {v.i >= 0 ? video.video[v.i].title : v.name}
+                  </div>
+                  {v.keys.map(s => (
+                    <label
+                      key={s.key}
+                      onClick={e => {
+                        this.setState({ step: s.key }, () => this.getLog());
+                      }}
+                      className={
+                        s.key === step ? 'logbox-filter__selected' : ''
+                      }
+                    >
+                      <StatusIcon status={s.state} /> {s.key}
+                    </label>
+                  ))}
+                </div>
               ))}
           </div>
           <div

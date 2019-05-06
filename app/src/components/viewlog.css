@@ -2,14 +2,41 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  align-items: flex-start;
+}
+.logbox-left {
+  width: 250px;
+  margin-right: 16px;
 }
 .logbox-filter {
-  width: 200px;
-  margin-right: 10px;
+  box-shadow: 0 2px 4px 0 rgba(30, 55, 90, 0.1);
+  border: 1px solid rgba(30, 55, 90, 0.1);
+  border-radius: 4px;
+  padding-bottom: 8px;
+}
+.logbox-filter-header {
+  padding: 8px;
+  border-bottom: 1px solid rgba(30, 55, 90, 0.1);
+  margin-bottom: 8px;
+  font-weight: 700;
+  overflow: hidden;
 }
 .logbox-filter label {
-  display: block;
-  margin-bottom: 5px;
+  display: flex;
+  padding: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  justify-content: flex-start;
+  align-items: center;
+}
+.logbox-filter label svg {
+  margin-right: 8px;
+}
+.logbox-filter label.logbox-filter__selected {
+  background-color: rgba(30, 55, 90, 0.1);
+}
+.logbox-filter label:last-child {
+  margin-bottom: 0;
 }
 
 .logbox-filter label input {

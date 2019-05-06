@@ -11,7 +11,9 @@ steps:
   settings:
     repo: piterjs/trimmer-app
     dockerfile: Dockerfile
-    tags: v0.0.1-${DRONE_COMMIT:0:8}
+    tags:
+    - v0.0.1-${DRONE_COMMIT:0:8}
+    - latest
     username:
       from_secret: docker_username
     password:
@@ -50,30 +52,13 @@ steps:
   settings:
     repo: piterjs/trimmer-watcher
     dockerfile: Dockerfile-watcher
-    tags: v0.0.1-${DRONE_COMMIT:0:8}
+    tags:
+    - v0.0.1-${DRONE_COMMIT:0:8}
+    - latest
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
-
-- name: deploy
-  image: vallard/drone-kube
-  environment:
-    KUBE_SERVER:
-      from_secret: KUBE_SERVER
-    KUBE_TOKEN:
-      from_secret: KUBE_TOKEN
-    KUBE_CA:
-      from_secret: KUBE_CA
-  settings:
-    template: deployment/watcher-deployment.yml
-    namespace: trimmer
-
-trigger:
-  event:
-  - push
-  branch:
-  - master
 
 ---
 kind: pipeline
@@ -92,7 +77,7 @@ steps:
     channel:
       from_secret: rocket_channel
     message: >
-      {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.fullname}}*
+      {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.namespace}}/{{repo.name}}*
 
       build: {{build.number}}
 

@@ -62,6 +62,26 @@ spec:
             configMapKeyRef:
               name: app
               key: baseURL
+       - name: "KUBE_SERVER"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: kube_url
+       - name: "KUBE_NAMESPACE"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: kube_namespace
+       - name: "KUBE_CA"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: kube_ca
+       - name: "KUBE_TOKEN"
+          valueFrom:
+            configMapKeyRef:
+              name: app
+              key: kube_token
         volumeMounts:
         - mountPath: /app/secrets
           readOnly: true

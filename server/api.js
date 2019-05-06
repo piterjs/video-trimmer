@@ -5,6 +5,8 @@ const { influx } = require('@piterjs/trimmer-shared');
 
 const { Video, Build, Service, Hub } = require('./models');
 
+const kube = require('./kubernetes');
+
 const OAuth2 = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
 const credentials = require('./secrets/client_id.json');
@@ -38,6 +40,9 @@ router.post('/add', async (req, res) => {
     const build = await Build.create({ video: data._id });
     data.builds = [build._id];
     await data.save();
+    if (process.env.KUBE_SERVER) {
+      await kube(data._id, build._id);
+    }
     res.status(200).json({
       data: { ...data.toJSON(), builds: [build.toJSON()] }
     });
@@ -93,6 +98,9 @@ router.get('/video/:id/restart', async (req, res) => {
     const build = await Build.create({ video: data._id });
     data.builds = [...data.builds.map(v => v._id), build._id];
     await data.save();
+    if (process.env.KUBE_SERVER) {
+      await kube(data._id, build._id);
+    }
     res.status(200).json({
       data: data.toJSON()
     });
@@ -101,6 +109,77 @@ router.get('/video/:id/restart', async (req, res) => {
     res.status(500).json({ error: 'server error' });
   }
 });
+
+const genStep = (key, nextKey, stage, st) => {
+  const x = ['error', 'end'];
+  if (x.includes(key)) {
+    if (!st.find(v => v.value === key)) {
+      return null;
+    }
+    return {
+      key,
+      stage: 'final',
+      state: key === 'error' ? 'error' : 'ready'
+    }
+  }
+  const has = !!st.find(v => v.value === key);
+  const hasNext = !!st.find(v => x.includes(nextKey) ? x.includes(v.value) : v.value === nextKey);
+  return {
+    key,
+    stage,
+    state: has && hasNext ? 'ready' : has ? 'in-progress' : 'waiting'
+  }
+};
+
+const getSteps = async (id, len) => {
+  const st = await influx.query(`SHOW TAG VALUES FROM "watcher" WITH KEY = "step" where build = '${id}'`);
+  let keys = [
+    'download-stream',
+    'download-preroll'
+  ];
+  for (let i = 0; i < len; i++) {
+    keys = keys.concat([
+      `download-preroll-${i}`,
+      `trim-${i}`,
+      `concat-${i}`,
+      `upload-${i}`
+    ]);
+  }
+  keys = keys.concat(['error', 'end']);
+
+  let steps = [];
+
+  for (let i = 0; i < keys.length; i++) {
+    const len = keys.length - 1;
+    const nk = i === len ? keys[i] : keys[i + 1];
+    const mv = keys[i].match(/-([0-9])/);
+    const stage = mv ? `video-${mv[1]}` : 'init';
+    if (mv) {
+      steps.push({ ...genStep(keys[i], nk, stage, st), i: parseInt(mv[1], 10) });
+    } else {
+      steps.push(genStep(keys[i], nk, stage, st));
+    }
+  }
+  steps = steps.filter(v => v);
+  const fe = steps.findIndex(v => v.key === 'error')
+  if (fe !== -1) {
+    steps[fe - 1].state = 'error';
+  }
+  const group = [];
+  for (let i = 0; i < steps.length; i++) {
+    const fi = group.findIndex(v => v.name === steps[i].stage);
+    if (fi === -1) {
+      group.push({
+        name: steps[i].stage,
+        i: steps[i].i >= 0 ? steps[i].i : -1,
+        keys: [steps[i]]
+      })
+    } else {
+      group[fi].keys.push(steps[i]);
+    }
+  }
+  return group;
+}
 
 router.get('/build/:id', async (req, res) => {
   const { id } = req.params;
@@ -115,20 +194,7 @@ router.get('/build/:id', async (req, res) => {
       return;
     }
     const log = await influx.query(`SELECT * FROM watcher WHERE build = '${id}' AND step='download-stream'`);
-    let steps = [
-      'download-stream',
-      'download-preroll'
-    ];
-    for (let i = 0; i < build.toJSON().video.video.length; i++) {
-      steps = steps.concat([
-        `download-preroll-${i}`,
-        `trim-${i}`,
-        `concat-${i}`,
-        `upload-${i}`
-      ]);
-    }
-    steps.push('error');
-    steps.push('end');
+    const steps = await getSteps(id, build.toJSON().video.video.length);
     res.status(200).json({
       build,
       steps,
@@ -157,8 +223,10 @@ router.get('/build/:id/log', async (req, res) => {
       return;
     }
     const log = await influx.query(`select * from "watcher" where build = '${id}' and step = '${step}' offset ${offset}`);
+    const steps = await getSteps(id, build.toJSON().video.video.length);
     res.status(200).json({
       build,
+      steps,
       log
     });
   } catch (error) {

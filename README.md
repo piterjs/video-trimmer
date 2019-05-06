@@ -39,7 +39,10 @@ Already a JavaScript developer? Pick an [issue](https://yt.piterjs.dev/issues/VT
 - `INFLUX_HOST` - influxdb host
 - `INFLUX_PORT` - influxdb port
 - `INFLUX_DB` - influxdb dbname
-
+- `KUBE_SERVER` - Kubernetes server url
+- `KUBE_NAMESPACE` - Kubernetes namespace
+- `KUBE_CA` - Kubernetes certificate
+- `KUBE_TOKEN` - Kubernetes token
 
 ### Local Services
 - mongodb - mongodb://localhost:27017
