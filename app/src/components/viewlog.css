@@ -21,7 +21,7 @@
   overflow: hidden;
   color: #fff;
   font-size: 16px;
-  font-family: Roboto Mono,monospace;
+  font-family: Roboto Mono, monospace;
   font-weight: 300;
   background-color: #1e375a;
   border-radius: 6px;
@@ -29,6 +29,50 @@
   box-sizing: border-box;
 }
 
+.logbox-log-fullscreen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0 !important;
+  width: auto;
+  border-radius: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  box-shadow: none;
+  overflow: auto;
+}
+
+.logbox-log-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.logbox-log-header-title {
+  color: #fff;
+  font-weight: 700;
+}
+.logbox-log-header-actions button {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-right: 20px;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
+.logbox-log-header-actions button:last-child {
+  margin-right: 0;
+}
+.logbox-log-header-actions button svg {
+  fill: #fff;
+}
 .logbox-log table {
   line-height: 26px;
 }

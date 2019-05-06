@@ -114,10 +114,23 @@ router.get('/build/:id', async (req, res) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
-    const log = await influx.query(`select * from "watcher" where build = '${id}'`);
+    const log = await influx.query(`SELECT * FROM watcher WHERE build = '${id}' AND step='download-stream'`);
+    let steps = [
+      'download-stream',
+      'download-preroll'
+    ];
+    for (let i = 0; i < build.toJSON().video.video.length; i++) {
+      steps = steps.concat([
+        `download-preroll-${i}`,
+        `trim-${i}`,
+        `concat-${i}`,
+        `upload-${i}`
+      ]);
+    }
+    steps.push('end');
     res.status(200).json({
       build,
-      steps: log.map(v => v.step).filter((v, i, self) => self.indexOf(v) === i),
+      steps,
       log
     });
   } catch (error) {
@@ -127,7 +140,7 @@ router.get('/build/:id', async (req, res) => {
 });
 
 router.get('/build/:id/log', async (req, res) => {
-  const { params: { id }, query: { offset } } = req;
+  const { params: { id }, query: { offset, step } } = req;
   if (!id) {
     res.status(400).json({ error: 'ID not set' });
     return;
@@ -142,10 +155,9 @@ router.get('/build/:id/log', async (req, res) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
-    const log = await influx.query(`select * from "watcher" where build = '${id}' limit 1000 offset ${offset}`);
+    const log = await influx.query(`select * from "watcher" where build = '${id}' and step = '${step}' limit 100 offset ${offset}`);
     res.status(200).json({
       build,
-      steps: log.map(v => v.step).filter((v, i, self) => self.indexOf(v) === i),
       log
     });
   } catch (error) {

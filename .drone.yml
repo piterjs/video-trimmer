@@ -81,13 +81,16 @@ name: after
 
 steps:
 - name: notify
-  image: appleboy/drone-telegram
+  image: mike1pol/drone-rocket
   settings:
-    format: markdown
+    url:
+      from_secret: rocket_url
+    user_id:
+      from_secret: rocket_id
     token:
-      from_secret: telegram_token
-    to:
-      from_secret: telegram_to
+      from_secret: rocket_token
+    channel:
+      from_secret: rocket_channel
     message: >
       {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.owner}}/{{repo.name}}*
 
