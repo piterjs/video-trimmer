@@ -1,0 +1,13 @@
+.icon {}
+.icon--lg {
+    width: 48px;
+    height: 48px;
+}
+.icon--md {
+    width: 32px;
+    height: 32px;
+}
+.icon--sm {
+    width: 18px;
+    height: 18px;
+}
