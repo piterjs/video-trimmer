@@ -31,10 +31,3 @@
     margin-left: 0;
     margin-top: 1em;
 }
-.menu__link--apps {
-    fill: #888;
-    transition: fill 0.3s ease-out;
-}
-.menu__link--apps:hover {
-    fill: #80c6ff;
-}
