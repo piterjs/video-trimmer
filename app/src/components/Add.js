@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
+import Input from './Input';
+import Button from './Button';
+import Select from './Select';
+import { FormGroup, FormLabel } from './Form';
+
 const styles = {
   form: {
-    width: '400px',
-    margin: '40px auto',
-    display: 'flex',
-    flexDirection: 'column'
+    width: '600px',
+    margin: '0 auto',
   },
   formLabel: {
     marginBottom: '10px'
@@ -63,49 +66,54 @@ export default () => {
   };
   return (
     <div>
-      <h2>Add new video</h2>
-      <form
+      <FormGroup
         style={styles.form}
         onSubmit={e => {
           e.preventDefault();
           addVideo();
         }}
       >
-        <label style={styles.formLabel}>
-          Title:
-          <input
-            style={{ width: '100%' }}
+        <h1 className="form__line">Slice stream</h1>
+        <FormLabel style={styles.formLabel} title="Текстовый ID для использования внутри триммера">
+          Stream title:
+        </FormLabel>
+        <Input
+            type="text"
+            placeholder="PiterJS N"
             value={state.title}
+            className="form__control"
             onChange={e => setState({ ...state, title: e.target.value })}
-          />
-        </label>
-        <label style={styles.formLabel}>
-          Stream:
-          <input
-            style={{ width: '100%' }}
+        />
+        <FormLabel style={styles.formLabel}>
+          Stream URL:
+        </FormLabel>
+        <Input
+            type="url"
             value={state.original}
+            className="form__control"
             onChange={e => setState({ ...state, original: e.target.value })}
-          />
-        </label>
-        <label style={styles.formLabel}>
-          Scale:
-          <select defaultValue={null} onChange={(e) => setState({ ...state, scale: e.target.value })}>
-            <option value={null}>No</option>
-            <option value="1920:1080">1080P</option>
-            <option value="2880:1620">4K</option>
-          </select>
-        </label>
-        <label style={styles.formLabel}>
+        />
+        <FormLabel style={styles.formLabel}>
+          Upscale:
+        </FormLabel>
+        <Select defaultValue={null} className="form__control" onChange={(e) => setState({ ...state, scale: e.target.value })}>
+          <option value={null}>No</option>
+          <option value="1920:1080">1080P (1920:1080)</option>
+          <option value="2880:1620">4K (2880:1620)</option>
+        </Select>
+        <FormLabel style={styles.formLabel}>
           Postroll:
-          <input
-            style={{ width: '100%' }}
+        </FormLabel>
+        <Input
+            type="url"
             value={state.postroll}
+            className="form__control"
             onChange={e => setState({ ...state, postroll: e.target.value })}
-          />
-        </label>
-        <h3>
-          Videos{' '}
-          <button
+        />
+        <h3 className="form__line">
+          Video parts{' '}
+          <Button
+            size="small"
             onClick={() =>
               setState({
                 ...state,
@@ -115,124 +123,147 @@ export default () => {
             type="button"
           >
             +
-          </button>
+          </Button>
         </h3>
         {state.video.map((v, i) => (
-          <div key={i} style={{ display: 'flex', flexDirection: 'column' }}>
-            <h4>Video #{i + 1}</h4>
-            <label style={styles.formLabel}>
+          <div key={i} className="form__line">
+            <FormGroup style={styles.form}>
+            <h4 className="form__line">Video #{i + 1}</h4>
+            <FormLabel style={styles.formLabel}>
               Preroll:
-              <input
-                style={{ width: '100%' }}
+            </FormLabel>
+            <Input
+                type="url"
                 value={state.video[i].preroll}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.preroll = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.preroll = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
-            <label style={styles.formLabel}>
+            />
+            <FormLabel style={styles.formLabel}>
               Video start:
-              <input
+            </FormLabel>
+            <Input
+                type="text"
                 value={state.video[i].start}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.start = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.start = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
-            <label style={styles.formLabel}>
+            />
+            <FormLabel style={styles.formLabel}>
               Video end:
-              <input
+            </FormLabel>
+            <Input
+                type="text"
                 value={state.video[i].end}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.end = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.end = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
-
-            <label style={styles.formLabel}>
-              Title:
-              <input
-                style={{ width: '100%' }}
+            />
+            <FormLabel style={styles.formLabel}>
+              Video title:
+            </FormLabel>
+            <Input
+                type="text"
                 value={state.video[i].title}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.title = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.title = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
-            <label style={styles.formLabel}>
+            />
+            <FormLabel style={styles.formLabel}>
               Description:
-              <br />
-              <textarea
-                rows="15"
+            </FormLabel>
+            <Input
+                tag="textarea"
+                rows="10"
                 style={{ width: '100%' }}
                 defaultValue={state.video[i].description}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.description = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.description = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
-            <label style={styles.formLabel}>
+            />
+            <FormLabel style={styles.formLabel}>
               Tags:
-              <input
-                style={{ width: '100%' }}
+            </FormLabel>
+            <Input
+                type="text"
                 value={state.video[i].tags}
+                className="form__control"
                 onChange={e =>
-                  setState({
-                    ...state,
-                    video: state.video.map((v, ii) => {
-                      if (ii === i) {
-                        v.tags = e.target.value;
-                      }
-                      return v;
+                    setState({
+                      ...state,
+                      video: state.video.map((v, ii) => {
+                        if (ii === i) {
+                          v.tags = e.target.value;
+                        }
+                        return v;
+                      })
                     })
-                  })
                 }
-              />
-            </label>
+            />
+            <Button
+                className="form__line"
+                onClick={() =>
+                    setState({
+                      ...state,
+                      video: [...state.video, { ...videoTemplate }]
+                    })
+                }
+                type="button"
+            >Add part</Button>
+            </FormGroup>
           </div>
         ))}
-        {!state.loading && <button>Add</button>}
-      </form>
+        {!state.loading && <Button
+            size="large"
+            color="primary"
+            className="form__line"
+        >Slice stream</Button>}
+      </FormGroup>
     </div>
   );
 };

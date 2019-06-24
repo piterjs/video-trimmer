@@ -59,8 +59,8 @@ export default ({
     // eslint-disable-next-line
   }, [id]);
   return (
-    <div>
-      <h2>{data.title || 'View trimming'}</h2>
+    <div className="wrapper">
+      <h1>{data.title || 'View trimming'}</h1>
       Stream:{' '}
       {data && data.original && (
         <a

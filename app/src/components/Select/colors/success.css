@@ -1,0 +1,9 @@
+.Select--color-success {
+    background-color: #fff;
+    border-color: #23d160;
+}
+.Select--color-success:active,
+.Select--color-success:focus {
+    border-color: #3273dc;
+    box-shadow: 0 0 0 .125em rgba(50,115,220,.25);
+}

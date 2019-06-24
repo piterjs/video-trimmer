@@ -4,18 +4,21 @@ import { Menu, MenuLink, MenuText } from '../Menu';
 import './Header.css';
 
 import Icon from '../Icon';
-import IconApps from '../../assets/apps.svg';
-import IconScissors from '../../assets/scissors.svg'
+import IconApps from '../../assets/icons/apps.svg';
+import IconScissors from '../../assets/icons/scissors.svg'
 
 export default () => (
-  <header className="header">
+  <header className="header wrapper">
       <Menu className="header__nav">
           <MenuLink modifer="icon" to="/">
               <Icon size="md" src={IconScissors} alt="Trimmer logo"/>
-              <MenuText>History</MenuText>
+              <MenuText>Home</MenuText>
+          </MenuLink>
+          <MenuLink to="/history">
+              History
           </MenuLink>
           <MenuLink to="/add">
-              Add new
+              Slice stream
           </MenuLink>
       </Menu>
       <Menu className="header__tray">

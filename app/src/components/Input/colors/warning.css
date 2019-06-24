@@ -1,0 +1,8 @@
+.Input--color-warning {
+    border-color: #ffdd57;
+}
+.Input--color-warning:active,
+.Input--color-warning:focus {
+    border-color: #3273dc;
+    box-shadow: 0 0 0 .125em rgba(50,115,220,.25);
+}

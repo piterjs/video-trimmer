@@ -1,0 +1,8 @@
+.Input--color-info {
+    border-color: #209cee;
+}
+.Input--color-info:active,
+.Input--color-info:focus {
+    border-color: #3273dc;
+    box-shadow: 0 0 0 .125em rgba(50,115,220,.25);
+}

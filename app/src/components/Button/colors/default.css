@@ -1,0 +1,17 @@
+.Button--color-default {
+    background-color: #fff;
+    border-color: #dbdbdb;
+    color: #363636;
+}
+.Button--color-default:hover {
+    border-color: #b5b5b5;
+    color: #363636;
+}
+.Button--color-default:focus {
+    box-shadow: 0 0 0 0.125em rgba(50,115,220,.25)
+}
+.Button--color-default:disabled {
+    color: #363636;
+    background-color: #fff;
+    border-color: #dbdbdb;
+}

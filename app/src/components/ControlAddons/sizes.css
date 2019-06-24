@@ -1,0 +1,21 @@
+/* sizes */
+.Control-addons--size-small > .Control {
+    font-size: .75rem;
+    border-radius: 2px;
+}
+.Control-addons--size-normal > .Control {
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.Control-addons--size-medium > .Control {
+    font-size: 1.25rem;
+    border-radius: 4px;
+}
+.Control-addons--size-large > .Control {
+    font-size: 1.5rem;
+    border-radius: 4px;
+}
+
+.Control-addons.is-fullwidth > .Control {
+    width: 100%;
+}

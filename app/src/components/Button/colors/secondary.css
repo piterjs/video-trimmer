@@ -1,0 +1,23 @@
+.Button--color-secondary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.Button--color-secondary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+.Button--color-secondary:active {
+    background-color: #0062cc;
+    border-color: #005cbf;
+}
+.Button--color-secondary:focus {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+}
+.Button--color-secondary:disabled {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}

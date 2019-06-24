@@ -9,6 +9,8 @@
 }
 
 body {
+  padding: 0;
+  margin: 0;
   font-size: 18px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, Arial, sans-serif;
 }
@@ -20,4 +22,10 @@ a {
 a:hover, a:focus {
   color: var(--link-hover-color);
   text-decoration: underline;
+}
+
+.wrapper {
+  max-width: 100%;
+  width: 1200px;
+  margin: auto;
 }
