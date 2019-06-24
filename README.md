@@ -1,5 +1,6 @@
 # Video trimmer
-[![Build Status](https://ci.piterjs.org/api/badges/piterjs/video-trimmer/status.svg)](https://ci.piterjs.org/piterjs/video-trimmer)
+[![Build Status](https://ci.piterjs.org/api/badges/piterjs/video-trimmer/status.svg)](https://ci.piterjs.org/piterjs/video-trimmer)[![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg)](https://trimmer.piterjs.dev/storybook-static/)
+
 
 ## Directories
 - /server - backend

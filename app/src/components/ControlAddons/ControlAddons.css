@@ -1,0 +1,29 @@
+.Control-addons {
+    max-width: 100%;
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+}
+.Control-addons > .Control {
+    position: relative;
+    flex: 1 1 auto;
+}
+.Control-addons > .Control:hover,
+.Control-addons > .Control:focus,
+.Control-addons > .Control:active {
+    z-index: 1;
+}
+.Control-addons > .Control:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.Control-addons > .Control:not(:first-child) {
+    margin-left: -1px;
+}
+.Control-addons > .Control:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+.Control-addons > .Control:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

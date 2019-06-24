@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select should render correctly 1`] = `
+<select
+  className="Control Control--size-normal Select Select--color-default "
+>
+  <option
+    value="test"
+  >
+    Test
+  </option>
+</select>
+`;

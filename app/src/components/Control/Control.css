@@ -1,0 +1,17 @@
+.Control {
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    line-height: 1.5;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, Arial, sans-serif;
+    padding-top: calc(.375em - 1px);
+    padding-right: calc(.625em - 1px);
+    padding-bottom: calc(.375em - 1px);
+    padding-left: calc(.625em - 1px);
+    vertical-align: middle;
+    box-shadow: none;
+}

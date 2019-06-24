@@ -1,0 +1,18 @@
+.form__group {
+    display: grid;
+    grid-template-columns: auto 80%;
+    grid-gap: 10px 0;
+}
+
+.form__label {
+    grid-column: 1;
+}
+
+.form__control {
+    position: relative;
+    grid-column: 2;
+}
+
+.form__line {
+    grid-column: 1 / span 2;
+}

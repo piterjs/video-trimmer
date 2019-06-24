@@ -1,0 +1,9 @@
+.Select--color-info {
+    background-color: #fff;
+    border-color: #209cee;
+}
+.Select--color-info:active,
+.Select--color-info:focus {
+    border-color: #3273dc;
+    box-shadow: 0 0 0 .125em rgba(50,115,220,.25);
+}

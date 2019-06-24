@@ -1,0 +1,22 @@
+.Button--color-primary {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.Button--color-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+.Button--color-primary:active {
+    background-color: #1e7e34;
+    border-color: #1c7430;
+}
+.Button--color-primary:focus {
+    background-color: #218838;
+    border-color: #1e7e34;
+    box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
+}
+.Button--color-primary:disabled {
+    background-color: #28a745;
+    border-color: #28a745;
+}

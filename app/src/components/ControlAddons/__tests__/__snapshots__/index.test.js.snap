@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlAddons should render correctly 1`] = `
+<div
+  className="Control-addons Control-addons--size-normal"
+  role="group"
+/>
+`;

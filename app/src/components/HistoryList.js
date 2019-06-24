@@ -42,8 +42,8 @@ export default () => {
   }, []);
 
   return (
-    <div>
-      <h2>History</h2>
+    <div className="wrapper">
+      <h1>History</h1>
       <ul
         style={{
           listStyle: 'none',

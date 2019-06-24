@@ -1,0 +1,12 @@
+.Select--color-default {
+    background-color: #fff;
+    border-color: #dbdbdb;
+}
+.Select--color-default:hover {
+    border-color: #b5b5b5;
+}
+.Select--color-default:active,
+.Select--color-default:focus {
+    border-color: #3273dc;
+    box-shadow: 0 0 0 .125em rgba(50,115,220,.25);
+}

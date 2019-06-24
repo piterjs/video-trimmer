@@ -1,0 +1,15 @@
+/* states */
+.Input[readonly] {
+    box-shadow: none;
+}
+.Input:disabled {
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+    color: #7a7a7a;
+    box-shadow: none;
+    user-select: none;
+    cursor: not-allowed;
+}
+.Input:disabled::placeholder {
+    color: rgba(122,122,122,.3);
+}

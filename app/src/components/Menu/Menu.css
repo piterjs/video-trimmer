@@ -25,16 +25,9 @@
     margin: 10px;
 }
 .menu__link--icon.menu__link--horizontal .menu__text {
-    margin-left: 1em;
+    margin-left: 0.5em;
 }
 .menu__link--icon.menu__link--vertical .menu__text {
     margin-left: 0;
-    margin-top: 1em;
-}
-.menu__link--apps {
-    fill: #888;
-    transition: fill 0.3s ease-out;
-}
-.menu__link--apps:hover {
-    fill: #80c6ff;
+    margin-top: 0.5em;
 }

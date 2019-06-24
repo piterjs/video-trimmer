@@ -1,6 +1,5 @@
 .idea
 node_modules
-node_modules
 *.nedb
 app/build
 server/secrets
@@ -11,3 +10,6 @@ influx-data
 .vscode
 .env
 .DS_Store
+/app/.storybook/.jest-test-results.json
+/app/storybook-static
+/app/coverage
