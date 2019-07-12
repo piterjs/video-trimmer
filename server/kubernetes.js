@@ -24,7 +24,7 @@ kc.loadFromOptions({
   currentContext: context.name
 });
 
-const k8sApi = kc.makeApiClient(k8s.Batch_v1Api);
+const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 
 module.exports = (video, build) => {
   const body = {

@@ -24,8 +24,8 @@ Already a JavaScript developer? Pick an [issue](https://yt.piterjs.dev/issues/VT
 1. Copy youtube secrets
   * `mv youtube_client_secret.json server/secrets/client_id.json`
   * `mv youtube_client_secret.json watcher/secrets/client_id.json`
-1. start backend `cd server && npm run dev`
-1. start app `cd app && npm run dev`
+1. start backend `cd server && docker-compose up -d && npm run dev`
+1. start app `cd app && npm start`
 1. start watcher `cd watcher && npm run dev`
 
 ### Envs
